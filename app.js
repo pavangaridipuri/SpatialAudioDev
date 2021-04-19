@@ -1,7 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var index = fs.readFileSync( 'index.html');
-
+var counter=0;
 var SerialPort = require('serialport');
 const parsers = SerialPort.parsers;
 var sys = require('sys'),
@@ -31,14 +31,16 @@ io.on('connection', function(socket) {
     
     console.log('Node is listening to port');
     exec('osascript -e "set volume output volume 100"', {silent:true}).output;
-    exec('open https://www.youtube.com/watch?v=El9K_EEv8cU', {silent:true}).output;
+    // exec('open https://www.youtube.com/watch?v=gQYsUjT-IBo', {silent:true}).output;
 
 });
 
 parser.on('data', function(data) {
     
     console.log('Received data from port: ' + data);
-    
+    var myArray = data.split(" ");
+    exec('osascript -e "set volume output volume '+((myArray[0]-24.5)*200)+'\"', {silent:true}).output; 
+    setTimeout(function(){ console.log("waiting"); }, 6000);
     io.emit('data', data);
     
 });
