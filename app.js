@@ -2,7 +2,7 @@ var http = require('http');
 var fs = require('fs');
 var index = fs.readFileSync( 'index.html');
 var counter=0;
-var orientation;
+var orientation = "Center";
 var SerialPort = require('serialport');
 const parsers = SerialPort.parsers;
 var sys = require('sys'),
@@ -44,19 +44,20 @@ parser.on('data', function(data) {
     console.log('Received data from port: ' + data);
     var myArray = data.split("/");
     // exec('osascript -e "set volume output volume '+((myArray[0]-24.5)*200)+'\"', {silent:true}).output; 
+    console.log(myArray[4]);
     if(orientation!=myArray[4])
     {
         let cmd;
         orientation=myArray[4];
-        if(orientation="Left")
-        {
-            cmd = `osascript FixSoundBalanceLeft.applescript`
-        }
-        else if(orientation="Right")
+        if(orientation=="Left")
         {
             cmd = `osascript FixSoundBalanceRight.applescript`
+        }
+        else if(orientation=="Right")
+        {
+            cmd = `osascript FixSoundBalanceLeft.applescript`
         }        
-        else if(orientation="Center"){
+        else if(orientation=="Center"){
             cmd = `osascript FixSoundBalanceCenter.applescript`
         }        
         require('child_process').exec(cmd, function (error, stdout, stderr) { console.log(error) })
